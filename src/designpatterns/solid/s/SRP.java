@@ -1,5 +1,7 @@
 package designpatterns.solid.s;
 
+import java.io.PrintStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,20 @@ class Journal {
 	@Override
 	public String toString() {
 		return String.join(System.lineSeparator(), entries);
+	}
+
+	// here we break SRP -- by taking 'saving' & 'loading' the Journals as a new
+	// concern.
+	public void save(String filename) throws Exception {
+		try (PrintStream out = new PrintStream(filename)) {
+			out.println(toString());
+		}
+	}
+
+	public void load(String filename) {
+	}
+
+	public void load(URL url) {
 	}
 }
 
