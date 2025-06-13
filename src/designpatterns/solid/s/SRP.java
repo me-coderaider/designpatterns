@@ -1,5 +1,7 @@
 package designpatterns.solid.s;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ class Journal {
 
 	// here we break SRP -- by taking 'saving' & 'loading' the Journals as a new
 	// concern.
+	/*
 	public void save(String filename) throws Exception {
 		try (PrintStream out = new PrintStream(filename)) {
 			out.println(toString());
@@ -35,7 +38,24 @@ class Journal {
 	}
 
 	public void load(URL url) {
+	} */
+}
+
+class Persistence {
+	public void saveToFile(Journal journal, String filename, boolean overwrite) throws FileNotFoundException {
+		if (overwrite || new File(filename).exists()) {
+			try (PrintStream out = new PrintStream(filename)) {
+				out.println(journal.toString());
+			}
+		}
 	}
+
+	public void load(Journal journal, String filename) {
+	}
+
+	public void load(Journal journal, URL url) {
+	}
+
 }
 
 class SRP {
@@ -44,5 +64,12 @@ class SRP {
 		j.addEntry("I cried today");
 		j.addEntry("I ate a bug");
 		System.out.println(j);
+		
+		Persistence p=new Persistence();
+	    String filename = "c:\\test\\journal.txt";
+	    p.saveToFile(j, filename, true);
+
+	    // windows!
+	    Runtime.getRuntime().exec("notepad.exe " + filename);
 	}
 }
