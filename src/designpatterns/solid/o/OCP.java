@@ -74,6 +74,20 @@ class SizeSpecification implements Specification<Product> {
 	}
 }
 
+class AndSpecification<T> implements Specification<T> { // specification/criteria combination
+	private Specification<T> first, second;
+
+	public AndSpecification(Specification<T> first, Specification<T> second) {
+		this.first = first;
+		this.second = second;
+	}
+
+	@Override
+	public boolean isSatisfied(T item) {
+		return first.isSatisfied(item) && second.isSatisfied(item);
+	}
+
+}
 
 class BetterFilter implements Filter<Product> { // BetterFilter better than 'ProductFilter'
 	@Override
@@ -105,5 +119,10 @@ class OCP {
 		System.out.println("Large products:");
 		bf.filter(products, new SizeSpecification(Size.LARGE))
 				.forEach(p -> System.out.println(" - " + p.name + " is large"));
+
+		System.out.println("Large blue items:");
+		bf.filter(products,
+				new AndSpecification<>(new ColorSpecification(Color.BLUE), new SizeSpecification(Size.LARGE)))
+				.forEach(p -> System.out.println(" - " + p.name + " is large and blue"));
 	}
 }
