@@ -39,16 +39,71 @@ class ProductFilter {
 	// 3 criteria = 7 methods
 }
 
+// we introduce two new interfaces that are open for extension
+interface Specification<T> {
+	boolean isSatisfied(T item);
+}
+
+interface Filter<T> {
+	Stream<T> filter(List<T> items, Specification<T> spec);
+}
+
+class ColorSpecification implements Specification<Product> {
+	private Color color;
+
+	public ColorSpecification(Color color) {
+		this.color = color;
+	}
+
+	@Override
+	public boolean isSatisfied(Product p) {
+		return p.color == color;
+	}
+}
+
+class SizeSpecification implements Specification<Product> {
+	private Size size;
+
+	public SizeSpecification(Size size) {
+		this.size = size;
+	}
+
+	@Override
+	public boolean isSatisfied(Product p) {
+		return p.size == size;
+	}
+}
+
+
+class BetterFilter implements Filter<Product> { // BetterFilter better than 'ProductFilter'
+	@Override
+	public Stream<Product> filter(List<Product> items, Specification<Product> spec) {
+		return items.stream().filter(p -> spec.isSatisfied(p));
+	}
+}
+
 class OCP {
 	public static void main(String[] args) {
 		Product apple = new Product("Apple", Color.GREEN, Size.SMALL);
 		Product tree = new Product("Tree", Color.GREEN, Size.LARGE);
 		Product house = new Product("House", Color.BLUE, Size.LARGE);
-		
+
 		List<Product> products = List.of(apple, tree, house);
 
 		ProductFilter pf = new ProductFilter(); // using the filter we have created.
 		System.out.println("Green products (old):");
 		pf.filterByColor(products, Color.GREEN).forEach(p -> System.out.println(" - " + p.name + " is green"));
+
+		// ^^ BEFORE
+
+		// vv AFTER
+		BetterFilter bf = new BetterFilter();
+		System.out.println("Green products (new):");
+		bf.filter(products, new ColorSpecification(Color.GREEN))
+				.forEach(p -> System.out.println(" - " + p.name + " is green"));
+
+		System.out.println("Large products:");
+		bf.filter(products, new SizeSpecification(Size.LARGE))
+				.forEach(p -> System.out.println(" - " + p.name + " is large"));
 	}
 }
