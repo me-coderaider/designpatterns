@@ -2,6 +2,8 @@ package designpatterns.solid.d;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.javatuples.Triplet;
 
@@ -23,31 +25,53 @@ class Person {
 		this.name = name;
 	}
 }
+// implementing this 'abstraction' in 'low level module -- Relationship'
+interface RelationshipBrowser {
+	List<Person> findAllChildrenOf(String name);
+}
 
-class Relationships {
+class Relationships implements RelationshipBrowser{
 
 	// Triplet class requires javatuples
 	private List<Triplet<Person, Relationship, Person>> relations = new ArrayList<>();
 
-	public List<Triplet<Person, Relationship, Person>> getRelations() { // getter for 'relations'
-		return relations;
-	}
+//	public List<Triplet<Person, Relationship, Person>> getRelations() { // getter for 'relations'
+//		return relations;
+//	}
 
 	public void addParentAndChild(Person parent, Person child) {
 		relations.add(new Triplet<>(parent, Relationship.PARENT, child));
 		relations.add(new Triplet<>(child, Relationship.CHILD, parent));
 	}
+
+	@Override
+	public List<Person> findAllChildrenOf(String name) {
+		return relations.stream()
+				.filter(x -> Objects.equals(x.getValue0().name, name) && x.getValue1() == Relationship.PARENT)
+				.map(Triplet::getValue2)
+				.collect(Collectors.toList());
+	}
 }
 
 class Research {
 	// to perform some 'research' we're dependent on 'Relationship'
-	public Research(Relationships relationships) {
+	
+	// commented as it violated 'DIP'
+	/*public Research(Relationships relationships) { 
 		// high-level: find all of John's children and John is parent of somebody
 		List<Triplet<Person, Relationship, Person>> relations = relationships.getRelations();
 		relations.stream().filter(x -> x.getValue0().name.equals("John") && x.getValue1() == Relationship.PARENT)
 				.forEach(ch -> System.out.println("John has a child called " + ch.getValue2().name));
+	} */
+	
+	public Research(RelationshipBrowser browser) {
+		List<Person> children=browser.findAllChildrenOf("John");
+		for(Person child:children) {
+			System.out.println("John has a child called "+child.name);
+		}
 	}
 
+	
 }
 
 class DIP {
