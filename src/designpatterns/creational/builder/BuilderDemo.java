@@ -54,6 +54,12 @@ class HtmlBuilder {
 		root.elements.add(e);
 	}
 
+	public HtmlBuilder addChildFluent(String childName, String childText) {
+		HtmlElement e = new HtmlElement(childName, childText);
+		root.elements.add(e);
+		return this; // returning 'this' and return-type as 'HTMLBuilder' for 'Fluent Interface'
+	}
+
 	public void clear() {
 		root = new HtmlElement();
 		root.name = rootName;
@@ -90,6 +96,13 @@ class BuilderDemo {
 		HtmlBuilder builder = new HtmlBuilder("ul");
 		builder.addChild("li", "hello");
 		builder.addChild("li", "world");
+		System.out.println(builder);
+
+		// fluent builder
+		builder.clear();
+		builder
+			.addChildFluent("li", "be")
+			.addChildFluent("li", "creative!");
 		System.out.println(builder);
 	}
 }
