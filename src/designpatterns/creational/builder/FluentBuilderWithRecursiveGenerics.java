@@ -23,11 +23,21 @@ class PersonBuilder {
 	}
 }
 
+class EmployeeBuilder extends PersonBuilder{
+	public EmployeeBuilder worksAt(String position) {
+		person.position=position;
+		return this;
+	}
+}
+
 public class FluentBuilderWithRecursiveGenerics {
 	public static void main(String[] args) {
 
-		PersonBuilder pb = new PersonBuilder();
-		Person person = pb.withName("John").build();
+		EmployeeBuilder pb = new EmployeeBuilder();
+		Person person = pb
+					.withName("John")
+					.worksAt() // function is not available
+					.build();
 		System.out.println(person);
 	}
 }
