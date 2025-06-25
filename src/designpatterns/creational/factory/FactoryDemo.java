@@ -8,7 +8,9 @@ class Point {
 		this.y = y;
 
 	}
+}
 
+class PointFactory {
 	// Factory Method
 	public static Point newCartesianPoint(double x, double y) {
 		return new Point(x, y);
@@ -17,11 +19,11 @@ class Point {
 	public static Point newPolarPoint(double rho, double theta) {
 		return new Point(rho * Math.cos(theta), rho * Math.sin(theta));
 	}
-
 }
 
 class FactoryDemo {
 	public static void main(String[] args) {
-		Point point = Point.newPolarPoint(2, 3);
+		Point point = PointFactory.newPolarPoint(2, 3);
+		Point point1 = new Point(4, 5);
 	}
 }
