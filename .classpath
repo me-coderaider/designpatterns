@@ -8,5 +8,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Users/924093/Downloads/javatuples-1.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/924093/Downloads/reflections-0.10.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/924093/Downloads/commons-lang3-3.17.0-bin/commons-lang3-3.17.0/commons-lang3-3.17.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
