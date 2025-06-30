@@ -44,7 +44,8 @@ class Person implements Cloneable{
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 //		return super.clone();
-		return new Person(names, address); // this is wrong, reason being names & address are references and will point to same object. 
+//		return new Person(names, address); // this is wrong, reason being names & address are references and will point to same object. 
+		return new Person(names.clone(), (Address)address.clone()); // this is wrong, reason being names & address are references and will point to same object. 
 	}
 }
 
