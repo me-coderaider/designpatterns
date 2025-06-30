@@ -8,8 +8,8 @@ class LazySingleton {
 		System.out.println("Initializating a lazy singleton.");
 
 	}
-
-	public static LazySingleton getInstance() {
+	// method 1 :- using 'synchronized keyword' to protect the singleton from being instantiated more than once
+	public static synchronized LazySingleton getInstance() {
 		if (instance == null) {
 			instance = new LazySingleton();
 		}
