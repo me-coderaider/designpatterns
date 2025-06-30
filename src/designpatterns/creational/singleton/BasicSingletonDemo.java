@@ -29,6 +29,12 @@ class BasicSingleton implements Serializable {
 	public static BasicSingleton getInstance() {
 		return INSTANCE;
 	}
+	
+	// required for correct serialization
+	// readResolve is used for _replacing_ the object read from the stream
+	protected Object readResolve() {
+		return INSTANCE;
+	}
 }
 
 class BasicSingletonDemo {
