@@ -14,7 +14,11 @@ import org.junit.Test;
 
 import com.google.common.collect.Iterables;
 
-class SingletonDatabase {
+interface Database {
+	int getPopulation(String name);
+}
+
+class SingletonDatabase implements Database {
 	private Dictionary<String, Integer> capitals = new Hashtable<>();
 	private static int instanceCount = 0;
 
@@ -59,6 +63,21 @@ class SingletonRecordFinder {
 	}
 }
 
+class ConfigurableRecordFinder {
+	private Database database;
+
+	public ConfigurableRecordFinder(Database database) {
+		this.database = database; // injecting dependency
+	}
+
+	public int getTotalPopulation(List<String> names) {
+		int result = 0;
+		for (String name : names)
+			result += database.getPopulation(name);
+		return result;
+	}
+}
+
 class SingletonTestabilityDemo {
 	public static void main(String[] args) {
 		SingletonDatabase db = SingletonDatabase.getInstance();
@@ -68,9 +87,25 @@ class SingletonTestabilityDemo {
 		System.out.println(String.format("%s has population %d", city, pop));
 	}
 }
+
+class DummyDatabase implements Database {
+	private Dictionary<String, Integer> data = new Hashtable<>();
+
+	public DummyDatabase() {
+		data.put("alpha", 1);
+		data.put("beta", 2);
+		data.put("gamma", 3);
+	}
+
+	@Override
+	public int getPopulation(String name) {
+		return data.get(name);
+	}
+}
+
 class Testability {
 
-	@Test
+	@Test // not a unit test! rather integration test
 	public void singletonTotalPopulationTest() {
 		// testing on a live database
 		SingletonRecordFinder rf = new SingletonRecordFinder();
@@ -78,4 +113,12 @@ class Testability {
 		int tp = rf.getTotalPopulation(names);
 		assertEquals(17500000 + 17400000, tp);
 	}
+
+	@Test
+	public void dependentPopulationTest() {
+		DummyDatabase db = new DummyDatabase();
+		ConfigurableRecordFinder rf = new ConfigurableRecordFinder(db);
+		assertEquals(4, rf.getTotalPopulation(List.of("alpha", "gamma")));
+	}
+
 }
